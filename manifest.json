@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+  "name": "Halo REQlist",
+  "version": "0.1",
+
+  "description": "Automatically creates a checklist of unlocked REQ cards in Halo 5: Guardians",
+
+  "author": "Daniel Farrell",
+  "homepage_url": "http://danf.me/",
+
+  "background": {
+    "scripts": [
+      "scripts/main.js"
+    ]
+  },
+  "browser_action": {
+    "default_icon": "icon.png"
+  },
+
+  "permissions": [
+    "cookies",
+    "*://*.halowaypoint.com/*"
+  ]
+}
