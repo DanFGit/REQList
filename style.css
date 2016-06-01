@@ -1,0 +1,55 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+  font-size: .7em;
+  background: url('hex.png') #333;
+  background-size: 190px;
+}
+
+.unowned { opacity: .2; }
+
+.toggle { display: none; }
+
+.Common     { order: 1; width: 100%; color: grey;  }
+.Uncommon   { order: 2; width: 100%; color: green;  }
+.Rare       { order: 3; width: 100%; color: blue;  }
+.UltraRare  { order: 4; width: 100%; color: purple;  }
+.Legendary  { order: 5; width: 100%; color: gold;  }
+
+.subcategory {
+    margin: 10px;
+    padding: 10px;
+    background: #fff;
+}
+
+.subcategory {
+    margin: 10px;
+    padding: 10px;
+    background: #fff;
+}
+
+.flex-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.req {
+    justify-content: space-around;
+}
+
+#status {
+    margin: 10px;
+    padding: 10px;
+    background: #FFF;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+h2 { width: 100%; order: 0; }
+
+.req { display: inline; }
