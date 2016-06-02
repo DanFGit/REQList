@@ -2,12 +2,35 @@
 <html>
   <head>
     <title>Halo REQList</title>
+    <link href='https://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="style.css">
     <script src="scripts/jquery.min.js"></script>
     <script src="main.js"></script>
   </head>
   <body>
+    <h1>Halo REQList</h1>
     <div id="status">Loading...</div>
+    <div id="totals">
+      <div id="yourTotals">
+        <h2>Your REQ Totals</h2>
+        <div id="Common">Common: <span class="ownedTotal">_</span>/<span class="totalCount">_</span></div>
+        <div id="Uncommon">Uncommon: <span class="ownedTotal">_</span>/<span class="totalCount">_</span></div>
+        <div id="Rare">Rare: <span class="ownedTotal">_</span>/<span class="totalCount">_</span></div>
+        <div id="UltraRare">Ultra Rare: <span class="ownedTotal">_</span>/<span class="totalCount">_</span></div>
+        <div id="Legendary">Legendary: <span class="ownedTotal">_</span>/<span class="totalCount">_</span></div>
+      </div>
+      <div id="youNeed">
+        <h2>You need to buy</h2>
+        <div id="Bronze"><span class="packsNeeded">_</span> Bronze packs</div>
+        <div id="Silver"><span class="packsNeeded">_</span> Silver packs</div>
+        <div id="Gold"><span class="packsNeeded">_</span> Gold packs</div>
+      </div>
+    </div>
     <div id="req-subcategories"></div>
+    <footer>
+      This application is offered by DanF.me, which is solely responsible for
+      its content. It is not sponsored or endorsed by Microsoft. Halo Logo are
+      trademarks of the Microsoft group of companies.
+    </footer>
   </body>
 </html>
