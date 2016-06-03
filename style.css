@@ -59,7 +59,14 @@ h2 { font-size: 1em; width: 100%; order: 0; }
 h3 { font-size: 0.8em; margin-top: 5px; }
 h3 span { font-size: inherit; }
 
-#req-subcategories h2 { cursor: pointer; }
+#req-subcategories h2 {
+  cursor: pointer;
+  background: url('plus.png') right no-repeat;
+}
+
+#req-subcategories h2.expanded {
+  background: url('minus.png') right no-repeat;
+}
 
 .req { display: inline; }
 

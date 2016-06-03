@@ -176,8 +176,11 @@ function parseREQs(response){
         case "ArmorMods":
           readable = "Armor Mods";
           break;
+        case "Equipment":
+          readable = "Power Ups";
+          break;
         case "ArmorSuit":
-          readable = "Armor Suit";
+          readable = "Armor";
           break;
         case "WeaponSkin":
           readable = "Weapon Skin";
@@ -273,10 +276,18 @@ function calculateTotals(){
   $('#totals #UltraRare .totalCount').text(total['UltraRare']);
   $('#totals #Legendary .totalCount').text(total['Legendary']);
 
+  var bronzeNeeded = Math.ceil((total['Common'] - totalOwned['Common']) / 0.66),
+      silverNeeded = Math.ceil(((total['Uncommon'] + total['Rare']) - (totalOwned['Uncommon'] + totalOwned['Rare'])) / 2.66),
+      goldNeeded = Math.ceil(((total['UltraRare'] + total['Legendary']) - (totalOwned['UltraRare'] + totalOwned['Legendary'])) / 2.66);
+
   //TODO: Remove 'magic number' of 0.66, 2.66
-  $('#totals #Bronze .packsNeeded').text(Math.ceil((total['Common'] - totalOwned['Common']) / 0.66));
-  $('#totals #Silver .packsNeeded').text(Math.ceil(((total['Uncommon'] + total['Rare']) - (totalOwned['Uncommon'] + totalOwned['Rare'])) / 2.66));
-  $('#totals #Gold .packsNeeded').text(Math.ceil(((total['UltraRare'] + total['Legendary']) - (totalOwned['UltraRare'] + totalOwned['Legendary'])) / 2.66));
+  $('#totals #Bronze .packsNeeded').text(bronzeNeeded);
+  $('#totals #Silver .packsNeeded').text(silverNeeded);
+  $('#totals #Gold .packsNeeded').text(goldNeeded);
+
+  $('#totals #Bronze .pointsNeeded').text("(" + (bronzeNeeded * 1250).toLocaleString() + " REQ points)");
+  $('#totals #Silver .pointsNeeded').text("(" + (silverNeeded * 5000).toLocaleString() + " REQ points)");
+  $('#totals #Gold .pointsNeeded').text("(" + (goldNeeded * 10000).toLocaleString() + " REQ points)");
 }
 
 //Wait until the extension tab has loaded before doing anything
@@ -301,4 +312,5 @@ document.addEventListener('DOMContentLoaded', function() {
 //Show/Hide the REQ Cards when the subcategories are clicked
 function slideCategory(event){
   $(event.target.nextSibling).slideToggle();
+  $(event.target).toggleClass('expanded');
 }
