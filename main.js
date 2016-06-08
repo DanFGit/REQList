@@ -91,7 +91,7 @@ function parseResponse(response){
   //Fixes Chrome issue of not deleting session cookies when the browser closes
   //if the user uses the 'Continue where you left off' setting
   if(html.find('.req-collection')[0] == undefined){
-    $('#status').addClass('error').html("Please log in to <a target='_blank' href='https://www.halowaypoint.com'>HaloWaypoint.com</a>");
+    $('#status').addClass('error').html("Please log in to <a target='_blank' href='https://www.halowaypoint.com'>HaloWaypoint.com</a>").show();
     return;
   }
 
