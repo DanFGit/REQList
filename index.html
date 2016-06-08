@@ -1,14 +1,14 @@
 <!doctype html>
 <html>
   <head>
-    <title>Halo REQList</title>
+    <title>Halo REQlist</title>
     <link href='https://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="style.css">
     <script src="scripts/jquery.min.js"></script>
     <script src="main.js"></script>
   </head>
   <body>
-    <h1>Halo REQList</h1>
+    <h1>Halo REQlist</h1>
     <div id="status">Loading...</div>
     <div id="totals">
       <div id="yourTotals">
@@ -20,10 +20,36 @@
         <div id="Legendary">Legendary: <span class="ownedTotal">_</span>/<span class="totalCount">_</span></div>
       </div>
       <div id="youNeed">
-        <h2>You need to buy</h2>
+        <h2>You need to buy*</h2>
         <div id="Bronze"><span class="packsNeeded">_</span> Bronze packs <span class="pointsNeeded"></span></div>
         <div id="Silver"><span class="packsNeeded">_</span> Silver packs <span class="pointsNeeded"></span></div>
         <div id="Gold"><span class="packsNeeded">_</span> Gold packs <span class="pointsNeeded"></span></div>
+      </div>
+      <div id="filter">
+        <h2>Rarity Filters</h2>
+        <div id="Common">Common</div>
+        <div id="Uncommon">Uncommon</div>
+        <div id="Rare">Rare</div>
+        <div id="UltraRare">Ultra Rare</div>
+        <div id="Legendary">Legendary</div>
+      </div>
+      <div id="filter">
+        <h2>Other Filters</h2>
+        <div id="owned">Unlocked</div>
+        <div id="unowned">Locked</div>
+      </div>
+      <div id="tools">
+        <h2>Tools</h2>
+        <div id="expandAll">Expand All</div>
+        <div id="collapseAll">Collapse All</div>
+        <div id="options">Options</div>
+      </div>
+      <div id="info">
+        * some REQs are not available in the purchasable packs. These are
+        found in Commendation packs, rank-up packs and special event packs
+        (like the HCS Packs). Therefore the number of packs you need to buy is
+        less than shown above. You should stop buying packs when you recieve
+        RP instead of permenant unlocks.
       </div>
     </div>
     <div id="req-subcategories"></div>

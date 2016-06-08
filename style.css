@@ -33,11 +33,11 @@ a {
 
 .toggle { display: none; }
 
-.Common     { order: 1; width: 100%; color: grey;  }
-.Uncommon   { order: 2; width: 100%; color: green;  }
-.Rare       { order: 3; width: 100%; color: blue;  }
-.UltraRare  { order: 4; width: 100%; color: purple;  }
-.Legendary  { order: 5; width: 100%; color: gold;  }
+.Common     { order: 1; width: 100%; color: grey; display: flex; flex-wrap: wrap; }
+.Uncommon   { order: 2; width: 100%; color: green; display: flex; flex-wrap: wrap; }
+.Rare       { order: 3; width: 100%; color: blue; display: flex; flex-wrap: wrap; }
+.UltraRare  { order: 4; width: 100%; color: purple; display: flex; flex-wrap: wrap; }
+.Legendary  { order: 5; width: 100%; color: gold; display: flex; flex-wrap: wrap; }
 
 .subcategory {
   margin: 10px;
@@ -56,7 +56,7 @@ a {
 
 h1 { font-size: 2em; color: #00CCFF; text-align:center; margin: 10px; }
 h2 { font-size: 1em; width: 100%; order: 0; }
-h3 { font-size: 0.8em; margin-top: 5px; }
+h3 { font-size: 0.8em; margin-top: 5px; width: 100%; }
 h3 span { font-size: inherit; }
 
 #req-subcategories h2 {
@@ -71,7 +71,7 @@ h3 span { font-size: inherit; }
 .req { display: inline; }
 
 #totals {
-  padding: 10px;
+  padding: 10px 10px 0 10px;
   margin: 10px;
   background: #cf0;
   display: flex;
@@ -80,6 +80,7 @@ h3 span { font-size: inherit; }
 
 #totals > div {
   margin-right: 80px;
+  margin-bottom: 10px;
 }
 
 footer {
@@ -88,4 +89,27 @@ footer {
   color: #aaa;
   font-size: 0.7em;
   text-align: center;
+}
+
+.filtered {
+  color: #999;
+  text-decoration: line-through;
+}
+
+.req span {
+  min-width: 200px;
+  padding-right: 20px;
+  display: inline-block;
+}
+
+#filter > div, #tools > div {
+  cursor: pointer;
+}
+
+#totals > #info {
+  font-size: .85em;
+  font-style: italic;
+  width: 100%;
+  color: #790;
+  margin-right: 10px;
 }

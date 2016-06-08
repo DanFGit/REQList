@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Halo REQlist",
-  "version": "0.1",
+  "version": "0.2",
 
   "description": "Automatically creates a checklist of unlocked REQ cards in Halo 5: Guardians",
 
@@ -19,7 +19,8 @@
 
   "permissions": [
     "cookies",
-    "*://*.halowaypoint.com/*"
+    "*://*.halowaypoint.com/*",
+    "storage"
   ],
 
   "icons": {
@@ -27,5 +28,11 @@
     "32": "icon32.png",
     "48": "icon48.png",
     "128": "icon128.png"
+  },
+
+  "options_page": "options.html",
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": true
   }
 }

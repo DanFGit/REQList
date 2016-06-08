@@ -10,6 +10,9 @@ var totals = [],
 //Keep track of how many of the requests are left
 var waiting = 2;
 
+//Stores user/default configuration values
+var options = {};
+
 //Sends a HTTP Request to the given URL, calls the callback function when the request is finished
 function sendRequest(method, url, callback){
   var xhr = new XMLHttpRequest();
@@ -38,7 +41,7 @@ function loadREQs(){
       } else {
         waiting--;
       }
-      parseREQs(response);
+      parseResponse(response);
     }
 
   });
@@ -55,7 +58,7 @@ function loadREQs(){
       } else {
         waiting--;
       }
-      parseREQs(response);
+      parseResponse(response);
     }
 
   });
@@ -72,7 +75,7 @@ function loadREQs(){
       } else {
         waiting--;
       }
-      parseREQs(response);
+      parseResponse(response);
     }
 
   });
@@ -80,10 +83,17 @@ function loadREQs(){
 }
 
 //Parses the responses from Halo Waypoint to find all the REQ Cards
-function parseREQs(response){
+function parseResponse(response){
 
   //Convert the response from HaloWaypoint into a jQuery object we can manipulate
   var html = $('<div/>').append(response);
+
+  //Fixes Chrome issue of not deleting session cookies when the browser closes
+  //if the user uses the 'Continue where you left off' setting
+  if(html.find('.req-collection')[0] == undefined){
+    $('#status').addClass('error').html("Please log in to <a target='_blank' href='https://www.halowaypoint.com'>HaloWaypoint.com</a>");
+    return;
+  }
 
   //Find all the REQ Cards in the response
   var REQs = html.find('.req-collection').find('.reqs-row').find('button');
@@ -230,12 +240,14 @@ function parseREQs(response){
 
     //Append the REQ Card to the DOM
     $('#' + subcategory + " ." + rarity ).append("<div class='" + (isOwned ? "owned" : "unowned") + " req'><img height='120px' src='" + card.children().data('src') + "' /></div>");
+    // $('#' + subcategory + " ." + rarity ).append("<div class='" + (isOwned ? "owned" : "unowned") + " req'><span>" + name + "</span></div>");
 
   });
 
   if(!waiting) calculateTotals();
 }
 
+//Calculates and displays how many REQs are owned and how many REQ points are needed to fill the collection
 function calculateTotals(){
   var total = [];
       total['Common'] = 0,
@@ -276,11 +288,19 @@ function calculateTotals(){
   $('#totals #UltraRare .totalCount').text(total['UltraRare']);
   $('#totals #Legendary .totalCount').text(total['Legendary']);
 
-  var bronzeNeeded = Math.ceil((total['Common'] - totalOwned['Common']) / 0.66),
-      silverNeeded = Math.ceil(((total['Uncommon'] + total['Rare']) - (totalOwned['Uncommon'] + totalOwned['Rare'])) / 2.66),
-      goldNeeded = Math.ceil(((total['UltraRare'] + total['Legendary']) - (totalOwned['UltraRare'] + totalOwned['Legendary'])) / 2.66);
+  if(options.useBronze){
+    var bronzeNeeded = Math.ceil((total['Common'] - totalOwned['Common']) / (options.bronzePermChance / 100)),
+        silverNeeded = Math.ceil(((total['Uncommon'] + total['Rare']) - (totalOwned['Uncommon'] + totalOwned['Rare'])) / (2 + (options.emblemPermChance / 100))),
+        goldNeeded = Math.ceil(((total['UltraRare'] + total['Legendary']) - (totalOwned['UltraRare'] + totalOwned['Legendary'])) / (2 + (options.emblemPermChance / 100)));
+  } else {
+    var bronzeNeeded = 0,
+        silverNeeded = Math.ceil(((total['Common'] + total['Uncommon'] + total['Rare']) - (totalOwned['Common'] + totalOwned['Uncommon'] + totalOwned['Rare'])) / (2 + (options.emblemPermChance / 100))),
+        goldNeeded = Math.ceil(((total['UltraRare'] + total['Legendary']) - (totalOwned['UltraRare'] + totalOwned['Legendary'])) / (2 + (options.emblemPermChance / 100)));
+  }
 
-  //TODO: Remove 'magic number' of 0.66, 2.66
+  //Convert NaN to 0 (if bronzePermChance is set to 0)
+  bronzeNeeded = bronzeNeeded || 0;
+
   $('#totals #Bronze .packsNeeded').text(bronzeNeeded);
   $('#totals #Silver .packsNeeded').text(silverNeeded);
   $('#totals #Gold .packsNeeded').text(goldNeeded);
@@ -293,7 +313,20 @@ function calculateTotals(){
 //Wait until the extension tab has loaded before doing anything
 document.addEventListener('DOMContentLoaded', function() {
 
+  //Gets the configurable options, filling with default values if not set
+  options = chrome.storage.sync.get({
+
+    useBronze: true,
+    bronzePermChance: 50,
+    emblemPermChance: 50
+
+  }, function(option){
+    options = option;
+    console.log(option);
+  });
+
   //Check the user is logged in to Halo Waypoint by checking the 'Auth' cookie
+  //Note: doesn't guarantee user is logged in, could be an old cookie
   chrome.cookies.get({
     'url': 'https://www.halowaypoint.com',
     'name': 'Auth'
@@ -307,6 +340,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
     }
   });
+
+  //Show/Hide the REQ Cards when the filters are triggered
+  $('#filter div').on('click', function(event){
+    $('.' + event.target.id).toggle();
+    $(event.target).toggleClass('filtered');
+  });
+
+  //Show/Hide the REQ Cards when the filters are triggered
+  $('#tools div').on('click', function(event){
+    if(event.target.id == 'collapseAll'){
+      $('.toggle').slideUp().prev().removeClass('expanded');
+    } else if(event.target.id == 'expandAll'){
+      $('.toggle').slideDown().prev().addClass('expanded');
+    } else if(event.target.id == 'toggleUnlocked'){
+      if(event.target.innerText == "Show Unlocked"){
+        event.target.innerText = "Hide Unlocked";
+        $('.owned').show();
+      } else {
+        event.target.innerText = "Show Unlocked";
+        $('.owned').hide();
+      }
+    } else if(event.target.id == 'toggleLocked'){
+      if(event.target.innerText == "Show Locked"){
+        event.target.innerText = "Hide Locked";
+        $('.unowned').show();
+      } else {
+        event.target.innerText = "Show Locked";
+        $('.unowned').hide();
+      }
+    } else if(event.target.id == "options"){
+      if (chrome.runtime.openOptionsPage) {
+        chrome.runtime.openOptionsPage();
+      } else {
+        window.open(chrome.runtime.getURL('options.html'));
+      }
+    }
+  });
+
 });
 
 //Show/Hide the REQ Cards when the subcategories are clicked

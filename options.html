@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Options - Halo REQlist</title>
+</head>
+<body>
+
+  <label>Buy bronze packs? This is recommended!</label><br>
+  <input type="checkbox" id="useBronze"><br><br>
+
+  <label>% chance of permenant unlock in bronze packs (0-100) Default: 50</label><br>
+  <input type="number" id="bronzePermChance" min="0" max="100"><br><br>
+
+  <label>% chance of emblem unlock in silver/gold packs (0-100) Default: 50</label><br>
+  <input type="number" id="emblemPermChance" min="0" max="100"><br><br>
+
+  <div id="status"></div>
+  <button id="save">Save</button>
+
+  <script src="options.js"></script>
+
+</body>
+</html>
