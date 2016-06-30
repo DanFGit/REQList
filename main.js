@@ -162,6 +162,7 @@ function parseResponse(response){
         case 'Speed Booster':
         case 'Upgraded Thrusters':
         case 'Increased Strength':
+        case 'Patrol Case':
           subcategory = "ArmorMods";
           break;
         default:
@@ -322,7 +323,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   }, function(option){
     options = option;
-    console.log(option);
+    //console.log(option);
   });
 
   //Check the user is logged in to Halo Waypoint by checking the 'Auth' cookie
