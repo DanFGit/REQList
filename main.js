@@ -1,11 +1,49 @@
 //Store all the REQ Cards
 //Can be accessed as reqs['Helmet']['Common']
 var reqs = [];
+var skinsNotInPacks = [
+  "343 Industries", "Counter Logic Gaming", "Evil Geniuses", "HCS Contender", "HCS Contender Blue", "HCS Contender Red", "OpTic Gaming",
+];
 
+var emblemsNotInPacks = [
+
+  //Uncommon
+  "Builder", "Elementary", "Knot", "Links", "Avian", "Celestial", "Cone'd", "Ground Pound", "Killer Bee", "Navy", "ODST", "Patch",
+  "Principle", "Stealth",
+
+  //Rare
+  "All Square", "Anchorite", "Angels' Mark", "Antelope", "AR Start", "Army", "Arrow on Target", "Assassin", "Axiom", "Blue Team", "Bolt",
+  "Bulltrue", "Campfire", "CAMS", "Cascade Stronghold Technologies", "Chief's Crest", "Confirmation", "Covenant Signet", "Crash",
+  "Cubicle", "Eco", "Enlisted", "Equilateral", "Eye of the Beast", "Falcon", "Fireborn", "Fireteam Crimson", "Fireteam Osiris",
+  "Flaming Skull", "Flip Mode", "Forerunner Signet", "Frontier", "Great Hunt", "Hand of the Didact", "Hannibal Weapon Systems", "Hastati",
+  "Headshot", "Hunter Prey", "Imperial", "Implied", "Incinerate", "Invex", "Jewel", "Listener", "Loading", "Loupe", "Mantis", "Marauder",
+  "Mark of the Hog", "Matrix", "Maw", "Meteor", "Mixer", "Mushroom", "Naded", "Network", "Nexus", "Noble", "Noise", "Nucleus", "ONI",
+  "Options", "Orbit", "Panda BR", "Pinwheel", "Pioneer", "Pirate", "Pivot", "Platform", "Prancer", "Predator", "Prime", "Radioactive",
+  "Ratio", "Reclaimer", "Revolve", "Rhino", "Salient Sword", "Scarab", "Scorpion", "Screw", "Signal", "Spartan League", "Spartan Seal",
+  "Splinter", "Tag It", "Teeth", "Three Eyes", "Traitor", "Triad", "Triarch", "Unicorn", "UNSC", "Volatile", "Warlord", "Wasp",
+  "Watershed Division", "Waves", "Winged",
+
+  //Ultra Rare
+  "Apollo", "Awake", "Cognate", "Confine", "Counter Logic Gaming", "Evil Geniuses", "Grenadier", "Halo World Championship 2016", "Iris",
+  "Isosceles", "January 2016 Season", "Kindred", "OpTic Gaming", "Pyramid", "Slumber", "Spartan-IV", "Summit", "Thanks Given", "Unworthy",
+
+  //Legendary
+  "Beta Prime", "Beta Recruit", "Beta Star", "Candy Canes", "February 2016 Season", "Great Wheel", "Guardian",
+  "Halo Championship Series", "Halo Channel", "Librarian", "Magnum Opus", "Mantle", "March 2016 Season", "May 2016 Season", "Season 4",
+  "Sentient", "Spartan Claus", "True Light", "Warden", "War's Quintet"
+
+]
+
+var armorNotInPacks = [
+  "Achilles", "Challenger", "Athlon Champion", "Mark VI GEN1", "Mark VI GEN1 Scarred"
+]
 //Store the number of REQs and how many the user owns
 //Can be accessed as totals['Common']
 var totals = [],
     owned = [];
+
+var inPacksTotals = [],
+    inPacksOwned = [];
 
 //Keep track of how many of the requests are left
 var waiting = 2;
@@ -233,11 +271,39 @@ function parseResponse(response){
       owned[subcategory]["UltraRare"] = 0;
       totals[subcategory]["Legendary"] = 0;
       owned[subcategory]["Legendary"] = 0;
+
+      inPacksTotals[subcategory] = [];
+      inPacksOwned[subcategory] = [];
+
+      inPacksTotals[subcategory]["Common"] = 0;
+      inPacksOwned[subcategory]["Common"] = 0;
+      inPacksTotals[subcategory]["Uncommon"] = 0;
+      inPacksOwned[subcategory]["Uncommon"] = 0;
+      inPacksTotals[subcategory]["Rare"] = 0;
+      inPacksOwned[subcategory]["Rare"] = 0;
+      inPacksTotals[subcategory]["UltraRare"] = 0;
+      inPacksOwned[subcategory]["UltraRare"] = 0;
+      inPacksTotals[subcategory]["Legendary"] = 0;
+      inPacksOwned[subcategory]["Legendary"] = 0;
     }
 
     //Increment the totals and owned count if necessary
     totals[subcategory][rarity]++;
     if(isOwned) owned[subcategory][rarity]++;
+
+    inPacksTotals[subcategory][rarity]++;
+    if(isOwned) inPacksOwned[subcategory][rarity]++;
+
+    //Filter REQs that aren't available in packs
+    if(
+      (subcategory == "Emblem" && emblemsNotInPacks.indexOf(name) != -1) ||
+      (subcategory == "Helmet" && armorNotInPacks.indexOf(name) != -1) ||
+      (subcategory == "ArmorSuit" && armorNotInPacks.indexOf(name) != -1) ||
+      (subcategory == "WeaponSkin" && skinsNotInPacks.indexOf(name) != -1)
+    ){
+      inPacksTotals[subcategory][rarity]--;
+      if(isOwned) inPacksOwned[subcategory][rarity]--;
+    }
 
     //Append the REQ Card to the DOM
     $('#' + subcategory + " ." + rarity ).append("<div class='" + (isOwned ? "owned" : "unowned") + " req'><img height='120px' src='" + card.children().data('src') + "' /></div>");
@@ -264,6 +330,20 @@ function calculateTotals(){
       totalOwned['UltraRare'] = 0,
       totalOwned['Legendary'] = 0;
 
+  var totalInPacks = [];
+      totalInPacks['Common'] = 0,
+      totalInPacks['Uncommon'] = 0,
+      totalInPacks['Rare'] = 0,
+      totalInPacks['UltraRare'] = 0,
+      totalInPacks['Legendary'] = 0;
+
+  var totalInPacksOwned = [];
+      totalInPacksOwned['Common'] = 0,
+      totalInPacksOwned['Uncommon'] = 0,
+      totalInPacksOwned['Rare'] = 0,
+      totalInPacksOwned['UltraRare'] = 0,
+      totalInPacksOwned['Legendary'] = 0;
+
   for(subcategory in reqs){
     $('#' + subcategory + ' h2 .totalOwned').text(owned[subcategory]["Common"] + owned[subcategory]["Uncommon"] + owned[subcategory]["Rare"] + owned[subcategory]["UltraRare"] + owned[subcategory]["Legendary"]);
     $('#' + subcategory + ' h2 .totalCount').text(totals[subcategory]["Common"] + totals[subcategory]["Uncommon"] + totals[subcategory]["Rare"] + totals[subcategory]["UltraRare"] + totals[subcategory]["Legendary"]);
@@ -272,8 +352,12 @@ function calculateTotals(){
       $('#' + subcategory + ' .' + rarity + ' h3 .totalOwned').text(owned[subcategory][rarity]);
       $('#' + subcategory + ' .' + rarity + ' h3 .totalCount').text(totals[subcategory][rarity]);
 
+
       total[rarity] += totals[subcategory][rarity];
       totalOwned[rarity] += owned[subcategory][rarity];
+
+      totalInPacks[rarity] += inPacksTotals[subcategory][rarity];
+      totalInPacksOwned[rarity] += inPacksOwned[subcategory][rarity];
     }
   }
 
@@ -290,13 +374,13 @@ function calculateTotals(){
   $('#totals #Legendary .totalCount').text(total['Legendary']);
 
   if(options.useBronze){
-    var bronzeNeeded = Math.ceil((total['Common'] - totalOwned['Common']) / (options.bronzePermChance / 100)),
-        silverNeeded = Math.ceil(((total['Uncommon'] + total['Rare']) - (totalOwned['Uncommon'] + totalOwned['Rare'])) / (2 + (options.emblemPermChance / 100))),
-        goldNeeded = Math.ceil(((total['UltraRare'] + total['Legendary']) - (totalOwned['UltraRare'] + totalOwned['Legendary'])) / (2 + (options.emblemPermChance / 100)));
+    var bronzeNeeded = Math.ceil((totalInPacks['Common'] - totalInPacksOwned['Common']) / (options.bronzePermChance / 100)),
+        silverNeeded = Math.ceil(((totalInPacks['Uncommon'] + totalInPacks['Rare']) - (totalInPacksOwned['Uncommon'] + totalInPacksOwned['Rare'])) / (2 + (options.emblemPermChance / 100))),
+        goldNeeded = Math.ceil(((totalInPacks['UltraRare'] + totalInPacks['Legendary']) - (totalInPacksOwned['UltraRare'] + totalInPacksOwned['Legendary'])) / (2 + (options.emblemPermChance / 100)));
   } else {
     var bronzeNeeded = 0,
-        silverNeeded = Math.ceil(((total['Common'] + total['Uncommon'] + total['Rare']) - (totalOwned['Common'] + totalOwned['Uncommon'] + totalOwned['Rare'])) / (2 + (options.emblemPermChance / 100))),
-        goldNeeded = Math.ceil(((total['UltraRare'] + total['Legendary']) - (totalOwned['UltraRare'] + totalOwned['Legendary'])) / (2 + (options.emblemPermChance / 100)));
+        silverNeeded = Math.ceil(((totalInPacks['Common'] + totalInPacks['Uncommon'] + totalInPacks['Rare']) - (totalInPacksOwned['Common'] + totalInPacksOwned['Uncommon'] + totalInPacksOwned['Rare'])) / (2 + (options.emblemPermChance / 100))),
+        goldNeeded = Math.ceil(((totalInPacks['UltraRare'] + totalInPacks['Legendary']) - (totalInPacksOwned['UltraRare'] + totalInPacksOwned['Legendary'])) / (2 + (options.emblemPermChance / 100)));
   }
 
   //Convert NaN to 0 (if bronzePermChance is set to 0)
