@@ -1,3 +1,5 @@
+var totalMonies = 0;
+
 //Store all the REQ Cards
 //Can be accessed as reqs['Helmet']['Common']
 var reqs = [];
@@ -144,6 +146,11 @@ function parseResponse(response){
     var subcategory = card.data('subcategory').replace(/ /g,'');
     var rarity = card.data('rarity').replace(/ /g,'');
     var name = card.data('name');
+
+    var sellPrice = card.data('sell-price');
+    var unusedCount = card.data('unused-count');
+
+    totalMonies += sellPrice * unusedCount;
 
     if(subcategory == "PowerWeapon" || subcategory == "Vehicle" || subcategory == "Equipment"){
       var isOwned = card.data('has-certification') == "True";
@@ -393,6 +400,8 @@ function calculateTotals(){
   $('#totals #Bronze .pointsNeeded').text("(" + (bronzeNeeded * 1250).toLocaleString() + " REQ points)");
   $('#totals #Silver .pointsNeeded').text("(" + (silverNeeded * 5000).toLocaleString() + " REQ points)");
   $('#totals #Gold .pointsNeeded').text("(" + (goldNeeded * 10000).toLocaleString() + " REQ points)");
+
+  $('#totals #youAreWorth .pointsWorth').text(totalMonies.toLocaleString());
 }
 
 //Wait until the extension tab has loaded before doing anything
