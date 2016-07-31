@@ -1,12 +1,15 @@
-var totalMonies = 0;
+//Calculates how many REQ points the user would have if they sold
+//their entire collection
+var totalWorth = 0;
 
 //Store all the REQ Cards
 //Can be accessed as reqs['Helmet']['Common']
 var reqs = [];
-var skinsNotInPacks = [
-  "343 Industries", "Counter Logic Gaming", "Evil Geniuses", "HCS Contender", "HCS Contender Blue", "HCS Contender Red", "OpTic Gaming",
-];
 
+//List of special items that aren't available in regular packs
+var skinsNotInPacks = [
+  "343 Industries", "Counter Logic Gaming", "Evil Geniuses", "HCS Contender", "HCS Contender Blue", "HCS Contender Red", "OpTic Gaming"
+];
 var emblemsNotInPacks = [
 
   //Uncommon
@@ -34,11 +37,11 @@ var emblemsNotInPacks = [
   "Halo Championship Series", "Halo Channel", "Librarian", "Magnum Opus", "Mantle", "March 2016 Season", "May 2016 Season", "Season 4",
   "Sentient", "Spartan Claus", "True Light", "Warden", "War's Quintet"
 
-]
-
+];
 var armorNotInPacks = [
   "Achilles", "Challenger", "Athlon Champion", "Mark VI GEN1", "Mark VI GEN1 Scarred"
-]
+];
+
 //Store the number of REQs and how many the user owns
 //Can be accessed as totals['Common']
 var totals = [],
@@ -63,7 +66,7 @@ function sendRequest(method, url, callback){
     if(xhr.readyState == 4){
       callback(xhr.status, xhr.responseText);
     }
-  }
+  };
 }
 
 //Loads all the REQs from Halo Waypoint, calls the onFinish function when all REQs are loaded
@@ -130,7 +133,7 @@ function parseResponse(response){
 
   //Fixes Chrome issue of not deleting session cookies when the browser closes
   //if the user uses the 'Continue where you left off' setting
-  if(html.find('.req-collection')[0] == undefined){
+  if(html.find('.req-collection')[0] === undefined){
     $('#status').addClass('error').html("Please log in to <a target='_blank' href='https://www.halowaypoint.com'>HaloWaypoint.com</a>").show();
     return;
   }
@@ -150,18 +153,20 @@ function parseResponse(response){
     var sellPrice = card.data('sell-price');
     var unusedCount = card.data('unused-count');
 
-    totalMonies += sellPrice * unusedCount;
+    var isOwned;
+
+    totalWorth += sellPrice * unusedCount;
 
     if(subcategory == "PowerWeapon" || subcategory == "Vehicle" || subcategory == "Equipment"){
-      var isOwned = card.data('has-certification') == "True";
+      isOwned = card.data('has-certification') == "True";
     } else {
-      var isOwned = card.data('have-owned') == "True";
+      isOwned = card.data('have-owned') == "True";
     }
 
     if(name == "Random Weapon" || name == "Random Vehicle") return;
 
     //Fix for all the loadout REQs sorting into individual categories
-    if(subcategory == ""){
+    if(subcategory === ""){
       switch(name){
         case 'Assault Rifle':
         case 'Recon AR':
@@ -249,15 +254,15 @@ function parseResponse(response){
           break;
       }
 
-      $('#req-subcategories').append("<div class='subcategory' id='" + subcategory + "'><h2>" + readable + " <span class='totalOwned'>0</span>/<span class='totalCount'>0</span></h2><div class=toggle><span class=flex-wrapper></span></div></div>")
+      $('#req-subcategories').append("<div class='subcategory' id='" + subcategory + "'><h2>" + readable + " <span class='totalOwned'>0</span>/<span class='totalCount'>0</span></h2><div class=toggle><span class=flex-wrapper></span></div></div>");
       $('#' + subcategory + ' h2').click(slideCategory);
     }
 
     //If this is the first item of a certain rarity in the sub-category, create a reference to the rarity
     if(!(rarity in reqs[subcategory])){
       reqs[subcategory][rarity] = [];
-      var readable = (rarity == "UltraRare" ? "Ultra Rare" : rarity);
-      $('#' + subcategory + ' .flex-wrapper').append("<div class='" + rarity + "'><h3>" + readable + " <span class='totalOwned'>0</span>/<span class='totalCount'>0</span></h3></div>");
+      var readableRarity = (rarity == "UltraRare" ? "Ultra Rare" : rarity);
+      $('#' + subcategory + ' .flex-wrapper').append("<div class='" + rarity + "'><h3>" + readableRarity + " <span class='totalOwned'>0</span>/<span class='totalCount'>0</span></h3></div>");
     }
 
     //Store the REQ card in an array organised into subcategories and rarities
@@ -268,30 +273,30 @@ function parseResponse(response){
       totals[subcategory] = [];
       owned[subcategory] = [];
 
-      totals[subcategory]["Common"] = 0;
-      owned[subcategory]["Common"] = 0;
-      totals[subcategory]["Uncommon"] = 0;
-      owned[subcategory]["Uncommon"] = 0;
-      totals[subcategory]["Rare"] = 0;
-      owned[subcategory]["Rare"] = 0;
-      totals[subcategory]["UltraRare"] = 0;
-      owned[subcategory]["UltraRare"] = 0;
-      totals[subcategory]["Legendary"] = 0;
-      owned[subcategory]["Legendary"] = 0;
+      totals[subcategory].Common = 0;
+      owned[subcategory].Common = 0;
+      totals[subcategory].Uncommon = 0;
+      owned[subcategory].Uncommon = 0;
+      totals[subcategory].Rare = 0;
+      owned[subcategory].Rare = 0;
+      totals[subcategory].UltraRare = 0;
+      owned[subcategory].UltraRare = 0;
+      totals[subcategory].Legendary = 0;
+      owned[subcategory].Legendary = 0;
 
       inPacksTotals[subcategory] = [];
       inPacksOwned[subcategory] = [];
 
-      inPacksTotals[subcategory]["Common"] = 0;
-      inPacksOwned[subcategory]["Common"] = 0;
-      inPacksTotals[subcategory]["Uncommon"] = 0;
-      inPacksOwned[subcategory]["Uncommon"] = 0;
-      inPacksTotals[subcategory]["Rare"] = 0;
-      inPacksOwned[subcategory]["Rare"] = 0;
-      inPacksTotals[subcategory]["UltraRare"] = 0;
-      inPacksOwned[subcategory]["UltraRare"] = 0;
-      inPacksTotals[subcategory]["Legendary"] = 0;
-      inPacksOwned[subcategory]["Legendary"] = 0;
+      inPacksTotals[subcategory].Common = 0;
+      inPacksOwned[subcategory].Common = 0;
+      inPacksTotals[subcategory].Uncommon = 0;
+      inPacksOwned[subcategory].Uncommon = 0;
+      inPacksTotals[subcategory].Rare = 0;
+      inPacksOwned[subcategory].Rare = 0;
+      inPacksTotals[subcategory].UltraRare = 0;
+      inPacksOwned[subcategory].UltraRare = 0;
+      inPacksTotals[subcategory].Legendary = 0;
+      inPacksOwned[subcategory].Legendary = 0;
     }
 
     //Increment the totals and owned count if necessary
@@ -324,38 +329,38 @@ function parseResponse(response){
 //Calculates and displays how many REQs are owned and how many REQ points are needed to fill the collection
 function calculateTotals(){
   var total = [];
-      total['Common'] = 0,
-      total['Uncommon'] = 0,
-      total['Rare'] = 0,
-      total['UltraRare'] = 0,
-      total['Legendary'] = 0;
+      total.Common = 0;
+      total.Uncommon = 0;
+      total.Rare = 0;
+      total.UltraRare = 0;
+      total.Legendary = 0;
 
   var totalOwned = [];
-      totalOwned['Common'] = 0,
-      totalOwned['Uncommon'] = 0,
-      totalOwned['Rare'] = 0,
-      totalOwned['UltraRare'] = 0,
-      totalOwned['Legendary'] = 0;
+      totalOwned.Common = 0;
+      totalOwned.Uncommon = 0;
+      totalOwned.Rare = 0;
+      totalOwned.UltraRare = 0;
+      totalOwned.Legendary = 0;
 
   var totalInPacks = [];
-      totalInPacks['Common'] = 0,
-      totalInPacks['Uncommon'] = 0,
-      totalInPacks['Rare'] = 0,
-      totalInPacks['UltraRare'] = 0,
-      totalInPacks['Legendary'] = 0;
+      totalInPacks.Common = 0;
+      totalInPacks.Uncommon = 0;
+      totalInPacks.Rare = 0;
+      totalInPacks.UltraRare = 0;
+      totalInPacks.Legendary = 0;
 
   var totalInPacksOwned = [];
-      totalInPacksOwned['Common'] = 0,
-      totalInPacksOwned['Uncommon'] = 0,
-      totalInPacksOwned['Rare'] = 0,
-      totalInPacksOwned['UltraRare'] = 0,
-      totalInPacksOwned['Legendary'] = 0;
+      totalInPacksOwned.Common = 0;
+      totalInPacksOwned.Uncommon = 0;
+      totalInPacksOwned.Rare = 0;
+      totalInPacksOwned.UltraRare = 0;
+      totalInPacksOwned.Legendary = 0;
 
-  for(subcategory in reqs){
-    $('#' + subcategory + ' h2 .totalOwned').text(owned[subcategory]["Common"] + owned[subcategory]["Uncommon"] + owned[subcategory]["Rare"] + owned[subcategory]["UltraRare"] + owned[subcategory]["Legendary"]);
-    $('#' + subcategory + ' h2 .totalCount').text(totals[subcategory]["Common"] + totals[subcategory]["Uncommon"] + totals[subcategory]["Rare"] + totals[subcategory]["UltraRare"] + totals[subcategory]["Legendary"]);
+  for(var subcategory in reqs){
+    $('#' + subcategory + ' h2 .totalOwned').text(owned[subcategory].Common + owned[subcategory].Uncommon + owned[subcategory].Rare + owned[subcategory].UltraRare + owned[subcategory].Legendary);
+    $('#' + subcategory + ' h2 .totalCount').text(totals[subcategory].Common + totals[subcategory].Uncommon + totals[subcategory].Rare + totals[subcategory].UltraRare + totals[subcategory].Legendary);
 
-    for(rarity in reqs[subcategory]){
+    for(var rarity in reqs[subcategory]){
       $('#' + subcategory + ' .' + rarity + ' h3 .totalOwned').text(owned[subcategory][rarity]);
       $('#' + subcategory + ' .' + rarity + ' h3 .totalCount').text(totals[subcategory][rarity]);
 
@@ -368,26 +373,30 @@ function calculateTotals(){
     }
   }
 
-  $('#totals #Common .ownedTotal').text(totalOwned['Common']);
-  $('#totals #Uncommon .ownedTotal').text(totalOwned['Uncommon']);
-  $('#totals #Rare .ownedTotal').text(totalOwned['Rare']);
-  $('#totals #UltraRare .ownedTotal').text(totalOwned['UltraRare']);
-  $('#totals #Legendary .ownedTotal').text(totalOwned['Legendary']);
+  $('#totals #Common .ownedTotal').text(totalOwned.Common);
+  $('#totals #Uncommon .ownedTotal').text(totalOwned.Uncommon);
+  $('#totals #Rare .ownedTotal').text(totalOwned.Rare);
+  $('#totals #UltraRare .ownedTotal').text(totalOwned.UltraRare);
+  $('#totals #Legendary .ownedTotal').text(totalOwned.Legendary);
 
-  $('#totals #Common .totalCount').text(total['Common']);
-  $('#totals #Uncommon .totalCount').text(total['Uncommon']);
-  $('#totals #Rare .totalCount').text(total['Rare']);
-  $('#totals #UltraRare .totalCount').text(total['UltraRare']);
-  $('#totals #Legendary .totalCount').text(total['Legendary']);
+  $('#totals #Common .totalCount').text(total.Common);
+  $('#totals #Uncommon .totalCount').text(total.Uncommon);
+  $('#totals #Rare .totalCount').text(total.Rare);
+  $('#totals #UltraRare .totalCount').text(total.UltraRare);
+  $('#totals #Legendary .totalCount').text(total.Legendary);
+
+  var bronzeNeeded  = 0;
+  var silverNeeded  = 0;
+  var goldNeeded    = 0;
 
   if(options.useBronze){
-    var bronzeNeeded = Math.ceil((totalInPacks['Common'] - totalInPacksOwned['Common']) / (options.bronzePermChance / 100)),
-        silverNeeded = Math.ceil(((totalInPacks['Uncommon'] + totalInPacks['Rare']) - (totalInPacksOwned['Uncommon'] + totalInPacksOwned['Rare'])) / (2 + (options.emblemPermChance / 100))),
-        goldNeeded = Math.ceil(((totalInPacks['UltraRare'] + totalInPacks['Legendary']) - (totalInPacksOwned['UltraRare'] + totalInPacksOwned['Legendary'])) / (2 + (options.emblemPermChance / 100)));
+    bronzeNeeded = Math.ceil((totalInPacks.Common - totalInPacksOwned.Common) / (options.bronzePermChance / 100));
+    silverNeeded = Math.ceil(((totalInPacks.Uncommon + totalInPacks.Rare) - (totalInPacksOwned.Uncommon + totalInPacksOwned.Rare)) / (2 + (options.emblemPermChance / 100)));
+    goldNeeded = Math.ceil(((totalInPacks.UltraRare + totalInPacks.Legendary) - (totalInPacksOwned.UltraRare + totalInPacksOwned.Legendary)) / (2 + (options.emblemPermChance / 100)));
   } else {
-    var bronzeNeeded = 0,
-        silverNeeded = Math.ceil(((totalInPacks['Common'] + totalInPacks['Uncommon'] + totalInPacks['Rare']) - (totalInPacksOwned['Common'] + totalInPacksOwned['Uncommon'] + totalInPacksOwned['Rare'])) / (2 + (options.emblemPermChance / 100))),
-        goldNeeded = Math.ceil(((totalInPacks['UltraRare'] + totalInPacks['Legendary']) - (totalInPacksOwned['UltraRare'] + totalInPacksOwned['Legendary'])) / (2 + (options.emblemPermChance / 100)));
+    bronzeNeeded = 0;
+    silverNeeded = Math.ceil(((totalInPacks.Common + totalInPacks.Uncommon + totalInPacks.Rare) - (totalInPacksOwned.Common + totalInPacksOwned.Uncommon + totalInPacksOwned.Rare)) / (2 + (options.emblemPermChance / 100)));
+    goldNeeded = Math.ceil(((totalInPacks.UltraRare + totalInPacks.Legendary) - (totalInPacksOwned.UltraRare + totalInPacksOwned.Legendary)) / (2 + (options.emblemPermChance / 100)));
   }
 
   //Convert NaN to 0 (if bronzePermChance is set to 0)
@@ -401,7 +410,7 @@ function calculateTotals(){
   $('#totals #Silver .pointsNeeded').text("(" + (silverNeeded * 5000).toLocaleString() + " REQ points)");
   $('#totals #Gold .pointsNeeded').text("(" + (goldNeeded * 10000).toLocaleString() + " REQ points)");
 
-  $('#totals #youAreWorth .pointsWorth').text(totalMonies.toLocaleString());
+  $('#totals #youAreWorth .pointsWorth').text(totalWorth.toLocaleString());
 }
 
 //Wait until the extension tab has loaded before doing anything
