@@ -172,6 +172,7 @@ function parseResponse(response){
         case 'Recon AR':
         case 'Hybrid AR':
         case 'Longshot AR':
+        case 'COG Assault Rifle':
           subcategory = "AssaultRifle";
           break;
         case 'Battle Rifle':
@@ -179,15 +180,19 @@ function parseResponse(response){
         case 'Hybrid BR':
         case 'Sentinel BR':
         case 'Longshot BR':
+        case 'COG Battle Rifle':
           subcategory = "BattleRifle";
           break;
         case 'DMR':
         case 'Recon DMR':
         case 'Hybrid DMR':
         case 'Sentinel DMR':
+        case 'COG DMR':
           subcategory = "DMR";
           break;
         case 'Magnum':
+        case 'Gunfighter Magnum':
+        case 'Tactical Magnum':
           subcategory = "Magnum";
           break;
         case 'Halo 2 Battle Rifle':
@@ -197,6 +202,7 @@ function parseResponse(response){
         case 'Projection SMG':
         case 'Hybrid SMG':
         case 'Recon SMG':
+        case 'COG SMG':
           subcategory = "SMG";
           break;
         case 'Advanced Sensors':
