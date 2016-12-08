@@ -172,6 +172,7 @@ function parseResponse(response){
         case 'Recon AR':
         case 'Hybrid AR':
         case 'Longshot AR':
+        case 'Morph AR':
         case 'COG Assault Rifle':
           subcategory = "AssaultRifle";
           break;
@@ -180,6 +181,7 @@ function parseResponse(response){
         case 'Hybrid BR':
         case 'Sentinel BR':
         case 'Longshot BR':
+        case 'Morph BR':
         case 'COG Battle Rifle':
           subcategory = "BattleRifle";
           break;
@@ -187,6 +189,7 @@ function parseResponse(response){
         case 'Recon DMR':
         case 'Hybrid DMR':
         case 'Sentinel DMR':
+        case 'Morph DMR':
         case 'COG DMR':
           subcategory = "DMR";
           break;
@@ -202,6 +205,7 @@ function parseResponse(response){
         case 'Projection SMG':
         case 'Hybrid SMG':
         case 'Recon SMG':
+        case 'Morph SMG':
         case 'COG SMG':
           subcategory = "SMG";
           break;
@@ -220,6 +224,11 @@ function parseResponse(response){
         case 'Increased Strength':
         case 'Patrol Case':
           subcategory = "ArmorMods";
+          break;
+        case '031 Exuberant Witness':
+        case 'Spartan Edward Buck':
+        case 'Yabda the Merciless':
+          subcategory = "VoicePacks";
           break;
         default:
           subcategory = "Unknown";
@@ -254,6 +263,9 @@ function parseResponse(response){
           break;
         case "PowerWeapon":
           readable = "Power Weapon";
+          break;
+        case "VoicePacks":
+          readable = "Voice Packs";
           break;
         default:
           readable = subcategory;
@@ -317,7 +329,8 @@ function parseResponse(response){
       (subcategory == "Emblem" && emblemsNotInPacks.indexOf(name) != -1) ||
       (subcategory == "Helmet" && armorNotInPacks.indexOf(name) != -1) ||
       (subcategory == "ArmorSuit" && armorNotInPacks.indexOf(name) != -1) ||
-      (subcategory == "WeaponSkin" && skinsNotInPacks.indexOf(name) != -1)
+      (subcategory == "WeaponSkin" && skinsNotInPacks.indexOf(name) != -1) ||
+      (subcategory == "VoicePacks")
     ){
       inPacksTotals[subcategory][rarity]--;
       if(isOwned) inPacksOwned[subcategory][rarity]--;
