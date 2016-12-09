@@ -225,11 +225,6 @@ function parseResponse(response){
         case 'Patrol Case':
           subcategory = "ArmorMods";
           break;
-        case '031 Exuberant Witness':
-        case 'Spartan Edward Buck':
-        case 'Yabda the Merciless':
-          subcategory = "VoicePacks";
-          break;
         default:
           subcategory = "Unknown";
           console.log(name);
@@ -264,8 +259,8 @@ function parseResponse(response){
         case "PowerWeapon":
           readable = "Power Weapon";
           break;
-        case "VoicePacks":
-          readable = "Voice Packs";
+        case "VoiceOver":
+          readable = "Voice Over";
           break;
         default:
           readable = subcategory;
@@ -330,7 +325,7 @@ function parseResponse(response){
       (subcategory == "Helmet" && armorNotInPacks.indexOf(name) != -1) ||
       (subcategory == "ArmorSuit" && armorNotInPacks.indexOf(name) != -1) ||
       (subcategory == "WeaponSkin" && skinsNotInPacks.indexOf(name) != -1) ||
-      (subcategory == "VoicePacks")
+      (subcategory == "VoiceOver")
     ){
       inPacksTotals[subcategory][rarity]--;
       if(isOwned) inPacksOwned[subcategory][rarity]--;
