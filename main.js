@@ -158,9 +158,9 @@ function parseResponse(response){
     totalWorth += sellPrice * unusedCount;
 
     if(subcategory == "PowerWeapon" || subcategory == "Vehicle" || subcategory == "Equipment"){
-      isOwned = card.data('has-certification') == "True";
+      isOwned = card.data('has-certification');
     } else {
-      isOwned = card.data('have-owned') == "True";
+      isOwned = card.data('have-owned');
     }
 
     if(name == "Random Weapon" || name == "Random Vehicle") return;
@@ -430,17 +430,27 @@ function calculateTotals(){
 //Wait until the extension tab has loaded before doing anything
 document.addEventListener('DOMContentLoaded', function() {
 
-  //Gets the configurable options, filling with default values if not set
-  options = chrome.storage.sync.get({
+  if(chrome.storage.sync){
+    //Gets the configurable options, filling with default values if not set
+    options = chrome.storage.sync.get({
 
-    useBronze: true,
-    bronzePermChance: 50,
-    emblemPermChance: 50
+      useBronze: true,
+      bronzePermChance: 50,
+      emblemPermChance: 50
 
-  }, function(option){
-    options = option;
-    //console.log(option);
-  });
+    }, function(option){
+      options = option;
+      console.log(option);
+    });
+  } else {
+    options = {
+      useBronze: true,
+      bronzePermChance: 50,
+      emblemPermChance: 50
+    }
+    console.log(options);
+  }
+
 
   //Check the user is logged in to Halo Waypoint by checking the 'Auth' cookie
   //Note: doesn't guarantee user is logged in, could be an old cookie
